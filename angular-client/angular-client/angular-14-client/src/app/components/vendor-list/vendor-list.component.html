@@ -1,0 +1,27 @@
+<div class="list row">
+    <div class="col-md-8">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search by Vendor Name" [(ngModel)]="vendorName" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="searchTitle()">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Vendor List</h4>
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let vendor of vendor; let i = index" [class.active]="i == currentIndex"
+                (click)="setActiveVendor(vendor, i)">
+                {{ vendor.vendorName }}
+            </li>
+        </ul>
+
+
+    </div>
+    <div class="col-md-6">
+        <app-vendor-details [viewMode]="true" [currentVendor]="currentVendor"></app-vendor-details>
+    </div>
+
+</div>

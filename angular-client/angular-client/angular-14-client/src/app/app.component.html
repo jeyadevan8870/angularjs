@@ -1,0 +1,34 @@
+<div>
+  <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a href="#" class="navbar-brand">OmSakthi</a>
+    <div class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a routerLink="vendor" class="nav-link">Create Vendor</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="vendorList" class="nav-link">Search Vendors</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="invoice" class="nav-link">Create Invoice</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="invoiceList" class="nav-link">Invoice Search  </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="reg" class="nav-link">User Registration</a>
+      </li>
+      <div class="loginmenu">
+      <li class="nav-item">
+        <a routerLink="login" class="nav-link">LogIn</a>
+      </li>
+      <li class="nav-item">
+        <a href class="nav-link" (click)="logout()">LogOut</a>
+      </li>
+    </div>
+    </div>
+  </nav>
+
+  <div class="container mt-3">
+    <router-outlet></router-outlet>
+  </div>
+</div>

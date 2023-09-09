@@ -1,0 +1,143 @@
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+<div *ngIf="viewMode; else editable">
+  <div *ngIf="currentInvoice.invoiceNumber">
+    <a class="badge badge-warning" routerLink="/invoiceList/{{ currentInvoice.invoiceNumber }}">
+      Edit
+    </a>
+  </div>
+  <div *ngIf="!currentInvoice">
+    <br />
+    <p>Please click on a Vendor...</p>
+  </div>
+</div>
+<ng-template #editable>
+  <div class="edit-form">
+    <form>
+
+      <body ng-app="invoicing" ng-controller="InvoiceCtrl">
+        <div class="input-container">
+          <input placeholder="copy" style="padding-left: 965px;" />
+        </div>
+        <div class="container" width="1200px" id="invoice">
+          <div class="row">
+            <div class="col-xs-12 heading">
+              TAX INVOICE
+            </div>
+          </div>
+          <div class="row branding">
+            <div class="col-xs-6">
+              <div class="invoice-number-container">
+                <label>Invoice #</label><input [(ngModel)]="currentInvoice.invoiceNumber"
+                  [ngModelOptions]="{standalone: true}" type="text" />
+              </div>
+              <div class="input-container">Date:<input type="date" [(ngModel)]="currentInvoice.invoiceDate"
+                  [ngModelOptions]="{standalone: true}" /></div>
+              <br>
+              <br>
+              <div>
+                GST NO:33DZLPS2003C1ZS
+              </div>
+              <br>
+              <div>
+                <P>PAN NO:DZLPS2003C</P>
+
+              </div>
+            </div>
+            <div class="col-xs-6 logo-container">
+              <h3>OM SAKTHI ENGINEERING INDUSTRIES</h3>
+              <p>PLOT No,Thirumagal Street,Krishnaparameshwari Nagar</p>
+              <h5>TRICHY-62004</h5>
+              <p><span>EMAIL:</span>omsakthiengineeringtry@gmail.com</p>
+            </div>
+          </div>
+          <div class="items-table">
+            <div class="row header">
+              <div class="sno">SI NO</div>
+              <div class="col-xs-1 remove-img">&nbsp;</div>
+              <div class="col-xs-2 particulars">Particulars</div>
+              <div class="col-xs-2 hsn">HSN-SAC </div>
+              <div class="col-xs-2 quantity">Quantity</div>
+              <div class="col-xs-2 cost">Cost </div>
+              <div class="col-xs-2 text-right total" style="padding-left: 170px;">Total</div>
+            </div>
+            <div class="row invoice-item" ng-animate="'slide-down'" *ngFor="let dynamic of invoiceList; let i = index;">
+              <div class="sno"></div>
+              <div class="col-xs-1 remove-item-container remove-img">
+                <a class="btn btn-danger" (click)="deleteRow(i)">[X]</a>
+              </div>
+              <div class="col-xs-2 input-container particulars  ">
+                <textarea [(ngModel)]="invoiceList[i].item" [ngModelOptions]="{standalone: true}" class="form-control"
+                  style="resize: none; "></textarea>
+              </div>
+              <div class="col-xs-2 input-container hsn">
+                <input [(ngModel)]="invoiceList[i].hsnsac" [ngModelOptions]="{standalone: true}" />
+              </div>
+              <div class="col-xs-2 input-container quantity ">
+                <input [(ngModel)]="invoiceList[i].quantity" (ngModelChange)="calculatePrice(invoiceList[i])"
+                  [ngModelOptions]="{standalone: true}" size="4" class="quantity-value" ng-required
+                  ng-validate="integer" placeholder="Quantity" />
+              </div>
+              <div class="col-xs-2 input-container cost">
+                <input [(ngModel)]="invoiceList[i].rate" (ngModelChange)="calculatePrice(invoiceList[i])"
+                  [ngModelOptions]="{standalone: true}" ng-validate="number" size="6" placeholder="Rate" />
+              </div>
+              <div class="col-xs-2 text-right input-container total" style="padding-left: 170px;">
+                <input ng-validate="number" size="6" style="width: 60px; text-align: right;"
+                  [(ngModel)]="invoiceList[i].totalPrice" [ngModelOptions]="{standalone: true}" placeholder="TotalPrice"
+                  [readonly]="true" />
+              </div>
+            </div>
+            <div class="row invoice-item">
+              <div class="col-xs-12 add-item-container" style="padding-left: 64px;">
+                <i class="btn btn-primary" (click)="addRow()">[+]</i>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-10 text-right">Sub Total:</div>
+              <div class="col-xs-2 text-right" style="padding-right: 34px; ">{{calculateTotal()}}</div>
+            </div>
+            <div class="row">
+              <div class="col-xs-10 text-right">CGST(9%):
+              </div>
+              <div class="col-xs-2 text-right"><input [(ngModel)]="currentInvoice.cgst"
+                  [ngModelOptions]="{standalone: true}" ng-validate="number" maxlength="5" [readonly]="true"
+                  style="width:60px">
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-xs-10 text-right">SGST(9%):
+              </div>
+              <div class="col-xs-2 text-right"><input [(ngModel)]="currentInvoice.sgst"
+                  [ngModelOptions]="{standalone: true}" ng-validate="number" maxlength="5" [readonly]="true"
+                  style="width:60px">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-10 text-right">Tax(%):</div>
+              <div class="col-xs-2 text-right"><input [(ngModel)]="currentInvoice.tax"
+                  [ngModelOptions]="{standalone: true}" ng-validate="number" maxlength="5" [readonly]="true"
+                  style="width:60px">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-10 text-right">Grand Total:</div>
+            <div class="col-xs-2 text-right"><input [(ngModel)]="currentInvoice.totalAmount"
+                [ngModelOptions]="{standalone: true}" maxlength="6" ng-validate="number" [readonly]="true" max="5"
+                style="width:60px"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-info" style="margin-left: 70px" (click)="updateTutorial()">
+          Update
+        </button>
+        <p>{{ message }}</p>
+        <div *ngIf="!currentInvoice.invoiceNumber">
+          <br />
+          <p>Cannot access this Vendor...</p>
+        </div>
+      </body>
+    </form>
+  </div>
+</ng-template>

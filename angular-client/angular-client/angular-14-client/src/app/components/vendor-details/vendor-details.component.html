@@ -1,0 +1,78 @@
+<div *ngIf="viewMode; else editable">
+  <div *ngIf="currentVendor.id">
+    <h4>Vendor</h4>
+
+
+    <a class="badge badge-warning" routerLink="/vendorList/{{ currentVendor.id }}">
+      Edit
+    </a>
+  </div>
+
+  <div *ngIf="!currentVendor">
+    <br />
+    <p>Please click on a Vendor...</p>
+  </div>
+</div>
+
+<ng-template #editable>
+  <div *ngIf="currentVendor.id" class="edit-form">
+    <h4>Vendor</h4>
+
+    <div class="form-group">
+      <label>Vendor Name</label>
+      <input type="text" class="form-control" id="vendorName" [(ngModel)]="currentVendor.vendorName"
+        name="vendorName" />
+    </div>
+    <div class="form-group">
+      <label for="gstNo">GST Number</label>
+      <input type="text" class="form-control" id="gstNo" [(ngModel)]="currentVendor.gstNo" name="gstNo" />
+    </div>
+    <div class="form-group">
+      <label for="panNo">PAN Number</label>
+      <input type="text" class="form-control" id="panNo" [(ngModel)]="currentVendor.panNo" name="panNo" />
+    </div>
+    <div class="form-group">
+      <label for="address1">Address1</label>
+      <input type="text" class="form-control" id="address1" [(ngModel)]="currentVendor.address1" name="address1" />
+    </div>
+    <div class="form-group">
+      <label for="address2">Address2</label>
+      <input type="text" class="form-control" id="address2" [(ngModel)]="currentVendor.address2" name="address2" />
+    </div>
+    <div class="form-group">
+      <label for="city">City</label>
+      <input type="text" class="form-control" id="city" [(ngModel)]="currentVendor.city" name="city" />
+    </div>
+    <div class="form-group">
+      <label for="state">STATE</label>
+      <input type="text" class="form-control" id="state" [(ngModel)]="currentVendor.state" name="state" />
+    </div>
+    <div class="form-group">
+      <label for="contry">Country</label>
+      <input type="text" class="form-control" id="contry" [(ngModel)]="currentVendor.contry" name="contry" />
+    </div>
+    <div class="form-group">
+      <label for="pinCode">Pincode</label>
+      <input type="text" class="form-control" id="pinCode" [(ngModel)]="currentVendor.pinCode" name="pinCode" />
+    </div>
+    <div class="form-group">
+      <label for="phoneNumber">phoneNumber</label>
+      <input type="text" class="form-control" id="phoneNumber" [(ngModel)]="currentVendor.phoneNumber"
+        name="phoneNumber" />
+    </div>
+
+
+
+
+
+    <button type="submit" class="badge badge-success mb-2" (click)="updateTutorial()">
+      Update
+    </button>
+    <p>{{ message }}</p>
+  </div>
+
+  <div *ngIf="!currentVendor.id">
+    <br />
+    <p>Cannot access this Vendor...</p>
+  </div>
+</ng-template>

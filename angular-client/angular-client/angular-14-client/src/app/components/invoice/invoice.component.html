@@ -1,0 +1,207 @@
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+
+
+
+<body ng-app="invoicing" ng-controller="InvoiceCtrl">
+  <div class="input-container">
+    <input placeholder="copy" style="padding-left: 965px;" />
+  </div>
+
+  <div class="container" width="1200px" id="invoice">
+    <div class="row">
+      <div class="col-xs-12 heading">
+        TAX INVOICE
+      </div>
+    </div>
+
+    <div class="row branding">
+      <div class="col-xs-6">
+        <div class="invoice-number-container">
+          <label>Invoice #</label><input type="text" [(ngModel)]="invoice.invoiceNumber" />
+        </div>
+        <div class="input-container">Date:<input type="date" [(ngModel)]="invoice.invoiceDate" /></div>
+        <br>
+        <div>
+          GST NO:33DZLPS2003C1ZS
+        </div>
+        <br>
+        <div>
+          <P>PAN NO:DZLPS2003C</P>
+
+        </div>
+      </div>
+
+      <div class="col-xs-6 logo-container">
+        <h3>OM SAKTHI ENGINEERING INDUSTRIES</h3>
+        <p>PLOT No,Thirumagal Street,Krishnaparameshwari Nagar</p>
+        <h5>TRICHY-62004</h5>
+        <p><span>EMAIL:</span>omsakthiengineeringtry@gmail.com</p>
+      </div>
+    </div>
+
+    <div class="row infos">
+      <div class="col-xs-6">
+        <!-- Customer Name Start -->
+        <form class="example-form" *ngIf="!printMode">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Enter Vendor Name</mat-label>
+            <input type="text" class="autocom" matInput [formControl]="myControl" [matAutocomplete]="auto">
+
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+              (optionSelected)='getVendorDetails($event.option.value)'>
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.vendorName}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>
+
+
+
+        <!--Customer Name End-->
+        <p style="font-weight: bold;font-size: 15px;">To</p>
+        <div>
+        <div class="input-container" *ngIf="!printMode"
+          style="font-weight: bold;font-size: 15px; text-decoration: underline;">Vendor Details:</div>
+        
+        <div class="input-container"><input type="text" [readonly]="true" style="font-weight: bold;font-size: 18px;"
+            [(ngModel)]="invoiceVendor.vendorName" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.address1" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.address2" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.city" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.state" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.pinCode" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.contry" /></div>
+        <div class="input-container"><input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.phoneNumber" />
+        </div>
+      </div>
+
+
+
+      </div>
+
+
+      <div class="col-xs-6 right">
+
+        <div class="input-container">PAN NO: <input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.panNo"
+            style="width: 150px;" />
+        </div>
+        <div class="input-container">GST NO: <input type="text" [readonly]="true" [(ngModel)]="invoiceVendor.gstNo"
+            style="width: 150px;" />
+        </div>
+      </div>
+    </div>
+    <div class="items-table">
+      <div class="row header">
+        <div class="sno">SI NO</div>
+        <div class="col-xs-1 remove-img">&nbsp;</div>
+
+        <div class="col-xs-2 particulars">Particulars</div>
+        <div class="col-xs-2 hsn">HSN-SAC </div>
+        <div class="col-xs-2 quantity">Quantity</div>
+        <div class="col-xs-2 cost">Cost </div>
+        <div class="col-xs-2 text-right total" style="padding-left: 170px;">Total</div>
+      </div>
+
+      <div class="row invoice-item" *ngFor="let dynamic of invoiceList; let i = index;" ng-animate="'slide-down'">
+        <div class="sno">{{i+1}}</div>
+        <div class="col-xs-1 remove-item-container remove-img">
+          <a *ngIf="!printMode" (click)="deleteRow(i)" class="btn btn-danger">[X]</a>
+        </div>
+
+
+
+        <div class="col-xs-2 input-container particulars  ">
+          <textarea [(ngModel)]="invoiceList[i].item" class="form-control" style="resize: none; "></textarea>
+        </div>
+
+        <div class="col-xs-2 input-container hsn">
+          <input [(ngModel)]="invoiceList[i].hsnsac" />
+        </div>
+
+        <div class="col-xs-2 input-container quantity ">
+          <input [(ngModel)]="invoiceList[i].quantity" size="4" class="quantity-value" ng-required ng-validate="integer"
+            placeholder="Quantity" (ngModelChange)="calculatePrice(invoiceList[i])" />
+        </div>
+
+        <div class="col-xs-2 input-container cost">
+          <input [(ngModel)]="invoiceList[i].rate" ng-validate="number" size="6" placeholder="Rate"
+            (ngModelChange)="calculatePrice(invoiceList[i])" />
+        </div>
+
+        <div class="col-xs-2 text-right input-container total" style="padding-left: 170px;">
+          <input [(ngModel)]="invoiceList[i].totalPrice" ng-validate="number" size="6"
+            style="width: 60px; text-align: right;" placeholder="TotalPrice" [readonly]="true" />
+        </div>
+      </div>
+
+
+      <div class="row invoice-item">
+        <div class="col-xs-12 add-item-container" *ngIf="!printMode" style="padding-left: 64px;">
+          <i class="btn btn-primary" (click)="addRow()">[+]</i>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-10 text-right">Sub Total:</div>
+        <div class="col-xs-2 text-right" style="padding-right: 34px; ">{{calculateTotal()}}</div>
+      </div>
+      <div class="row">
+        <div class="col-xs-10 text-right">CGST(9%):
+        </div>
+        <div class="col-xs-2 text-right"><input [(ngModel)]="invoice.cgst" ng-validate="number" maxlength="5"
+            [readonly]="true" style="width:60px">
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-10 text-right">SGST(9%):
+        </div>
+        <div class="col-xs-2 text-right"><input [(ngModel)]="invoice.sgst" ng-validate="number" maxlength="5"
+            [readonly]="true" style="width:60px">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-10 text-right">Tax(%):</div>
+        <div class="col-xs-2 text-right"><input [(ngModel)]="invoice.tax" ng-validate="number" maxlength="5"
+            [readonly]="true" style="width:60px">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-10 text-right">Grand Total:</div>
+      <div class="col-xs-2 text-right"><input [(ngModel)]="invoice.totalAmount" maxlength="6" ng-validate="number"
+          [readonly]="true" max="5" style="width:60px"></div>
+    </div>
+    <div class="for">
+      <p>FOR</p>
+      <p style="padding-left: 45px;">OM SAKTHI ENG LIMITED</p>
+    </div>
+    <div class="bankDetails">
+      <p style="font-weight: bold;">BANK DETAILS:</p>
+      <p>OM SAKTHI ENGINEERING INDUSTRIES</p>
+      <P>CANARA BANK,THIRUVERUMBUR BRANCH,TRICHY-620010</P>
+      <P>A/C NO:637514000000347</P>
+      <P>IFSC CODE:CNRB0016375</P>
+    </div>
+
+
+    <div class="sig">
+      <P>AUTHORIZED SIGNATURE</P>
+    </div>
+
+    <div class="row" [ngClass]="{'noPrint': true, 'actions': true}">
+      <a class="btn btn-primary" *ngIf="printMode" (click)="printPage()">Print</a>
+      <button [hidden]="printMode" (click)="saveInvoice()" class="btn btn-primary">Submit</button>
+      <a class="btn btn-primary" *ngIf="!printMode" (click)="printMode = true;">Turn On Print Mode</a>
+      <a class="btn btn-primary" *ngIf="printMode" (click)="printMode = false;">Turn Off Print Mode</a>
+
+    </div>
+
+    <div *ngIf="submitted">
+      <h4 *ngIf="!printMode">invoice Created successfully!</h4>
+      <button class="btn btn-success" (click)="newInvoice()" *ngIf="!printMode">Add</button>
+
+    </div>
+  </div>

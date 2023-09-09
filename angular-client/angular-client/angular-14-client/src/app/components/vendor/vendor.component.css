@@ -1,0 +1,10 @@
+.submit-form {
+    max-width: 400px;
+    margin: auto;
+  }
+  #date {
+    width: 80%;
+  }
+.textarea{
+  height: 30px;
+}

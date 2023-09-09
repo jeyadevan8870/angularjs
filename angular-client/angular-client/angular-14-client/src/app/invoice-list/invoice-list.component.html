@@ -1,0 +1,40 @@
+<div class="list row">
+  <div class="col-md-8">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search by Invoice Number" [(ngModel)]="invoiceNumber"
+        id="invoiceNumber" />
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" (click)="getInvoiceDetails()">
+          Search
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div *ngIf="invoice">
+    <h3>Invoice Number: {{ invoice.invoiceNumber }}</h3>
+    <p>Invoice Date: {{ invoice.invoiceDate }}</p>
+    <h4>Particulars</h4>
+    <div class="col-md-6">
+      <ul class="list-group">
+        <li class="list-group-item" style="    width: 777px;" class="list-group-item"
+          *ngFor="let particular of invoice.particulars ;let i=index" [class.active]="i == currentIndex"
+          (click)="setActiveInvoice(invoice, i)">
+          Item: {{ particular.item }}, Quantity: {{ particular.quantity }}, Rate: {{ particular.rate }}, Total Price: {{
+          particular.totalPrice }}
+        </li>
+      </ul>
+      <button (click)="updateEmployee(invoice.invoiceNumber)" class="btn btn-info"
+        style="margin-left: 10px">Update</button>
+
+      <button (click)="Invoice(invoice.invoiceNumber)" class="btn btn-info" style="margin-left: 10px">get</button>
+    </div>
+
+  </div>
+  <div class="col-md-6">
+    <app-invoice-update-details [viewMode]="true" [currentInvoice]="currentInvoice"></app-invoice-update-details>
+  </div>
+</div>
